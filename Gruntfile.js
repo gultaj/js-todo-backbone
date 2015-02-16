@@ -1,34 +1,44 @@
 
 module.exports = function(grunt) {
+
+	var modRewrite = require('connect-modrewrite');
+
 	grunt.initConfig({
 		connect: {
 			server: {
 				options: {
 					port: 9000,
-					base: '/src',
+					base: ['src/'],
 					hostname: "localhost",
-					livereload: true,
 					open: true,
-					keepalive: true
+					livereload: 35729
+				},
+				livereload: {
+					options: {
+						middleware: function(connect, options) {
+						  	var middlewares = [];
+
+							middlewares.push(modRewrite(['^[^\\.]*$ /index.html [L]'])); //Matches everything that does not contain a '.' (period)
+							options.base.forEach(function(base) {
+								middlewares.push(connect.static(base));
+							});
+							return middlewares;
+						}
+					}
+				}
+			}
+		},
+		watch: {
+			livereload: {
+				files: 'src/index.html',
+				options: {
+					livereload: true
 				}
 			}
 		}
-		// watch: {
-		// 	// sass: {
-		// 	// 	files: ['src/sass/**/*.sass'],
-		// 	// 	tasks: ['compass']
-		// 	// },
-		// 	livereload: {
-		// 		files: ['*.html'],
-		// 		options: {
-		// 			livereload: true,
-		// 			debounceDelay: 250
-		// 		}
-		// 	}
-		// }
 	});
 
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-	grunt.registerTask('default', ['connect', 'watch']);
+	grunt.registerTask('default', ['connect','watch']);
 };
