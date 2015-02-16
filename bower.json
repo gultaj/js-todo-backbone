@@ -1,0 +1,20 @@
+{
+  "name": "js-todo-backbone",
+  "version": "0.0.1",
+  "homepage": "https://github.com/gultaj/js-todo-backbone",
+  "authors": [
+    "gultaj <yaschick.mail@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "backbone.localStorage": "~1.1.16"
+  }
+}
