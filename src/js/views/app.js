@@ -1,10 +1,10 @@
 
 var app = app || {};
 
-app.appView = Backbone.View.extend({
+app.AppView = Backbone.View.extend({
 	el: '#todoapp',
 
-	statsTemplate: _.template( $('#stast-template').html() ),
+	statsTemplate: _.template( $('#stats-template').html() ),
 
 	events: {
 		'keypress #new-todo': 'createOnEnter',
@@ -59,6 +59,42 @@ app.appView = Backbone.View.extend({
 
 	addAll: function() {
 		this.$('#todo-list').html('');
-		app.Todos.each(this.addOne, this)
+		app.Todos.each(this.addOne, this);
+	},
+
+	filterOne: function(todo) {
+		todo.trigger('visible');
+	},
+
+	filterAll: function() {
+		app.Todos.each(this.filterOne, this);
+	},
+
+	newAttributes: function() {
+		return {
+			title: this.$input.val(),
+			order: app.Todos.nextOrder(),
+			completed: false
+		};
+	},
+
+	createOnEnter: function(event) {
+		if (event.which !== ENTER_KEY || !this.$input.val().trim()) return;
+
+		app.Todos.create(this.newAttributes());
+		this.$input.val('');
+	},
+
+	clearCompleted: function() {
+		_.invoke(app.Todos.completed(), 'destroy');
+		return false;
+	},
+
+	toggleAllComplete: function() {
+		var completed = this.allCheckbox.checked;
+
+		app.Todos.each(function(todo) {
+			todo.save({'completed': completed});
+		});
 	}
 });
