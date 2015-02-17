@@ -11,6 +11,7 @@ app.TodoView = Backbone.View.extend({
 		'dblclick label': 'edit',
 		'click .destroy': 'clear',
 		'keypress .edit': 'updateOnEnter',
+		'keydown .edit': 'resetOnEscape',
 		'blur .edit': 'close'
 	},
 
@@ -21,7 +22,7 @@ app.TodoView = Backbone.View.extend({
 	},
 
 	render: function() {
-		this.$el.html(this.template(this.model.attributes));
+		this.$el.html(this.template(this.model.toJSON()));
 
 		this.$el.toggleClass('completed', this.model.get('completed'));
 		this.toggleVisible();
@@ -47,6 +48,14 @@ app.TodoView = Backbone.View.extend({
 
 	updateOnEnter: function(event) {
 		if (event.which === ENTER_KEY) this.close();
+	},
+
+	resetOnEscape: function(event) {
+		if (event.which === ESCAPE_KEY) {
+			this.$input.val(this.model.get('title'));
+			this.$el.removeClass('editing');
+		}
+
 	},
 
 	close: function() {
